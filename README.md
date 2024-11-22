@@ -57,7 +57,7 @@ Simply clone this project and run `make` will do. The binary is placed in `prog/
 To install to your system path, run `make install` with root privilege. Prefix is by default
 `/usr/local`.
 
-The `libcurl` and `libav` libraries are all dynamically linked by default.
+The `libcurl` and `libav` libraries are all dynamically linked.
 
 To clean up, use `make clean`.
 
@@ -65,8 +65,8 @@ To clean up, use `make clean`.
 
 ### Cookie
 
-This crawler is supposed to be supplied with cookies. The specific cookie required is `SESSDATA`,
-which can be obtained by login to the bilibili web client and search in Storage/Cookies.
+This crawler is supposed to be working with cookies. The specific cookie required is `SESSDATA`,
+which can be obtained by logging in to the bilibili web client and search in Storage/Cookies.
 
 Save this string to file `$HOME/.misakaii`, in form:
 
@@ -89,8 +89,8 @@ misakaii <url1> [<url2>] ... -cookie <file> {options}
   -help  Display this list of options
 ```
 
-You can specify more than one `<url>`s, and some advanced options can be set.
+You can specify more than one `<url>`s, and some advanced options can also be set.
 
 ## Contribution
 
-You are welcomed to open issues or pull requests.
+You are always welcomed to open issues or pull requests.
