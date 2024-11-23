@@ -47,6 +47,8 @@ static char *opt_size(curl_off_t bytes, char *size) {
 #define PETABYTE (1024L * TERABYTE)
   if (bytes < 100000L)
     snprintf(size, 6, "%5ld", bytes);
+  else if (bytes < 1000L * KILOBYTE)
+    snprintf(size, 6, "%3ld.k", bytes / KILOBYTE);
   else if (bytes < 10000L * KILOBYTE)
     snprintf(size, 6, "%4ldk", bytes / KILOBYTE);
   else if (bytes < 100L * MEGABYTE)
