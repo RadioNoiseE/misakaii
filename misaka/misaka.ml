@@ -131,6 +131,12 @@ let season_down url ssid options =
                       ) pager
   | _ -> raise ErroneousTarget
 
+let media_down url mdid options =
+  let info = "https://api.bilibili.com/pgc/review/user" in
+  let responce = Json.parse (Curl.get "string" (comp_url info ["media_id=" ^ mdid]) url options.cookie) |> Json.get_child "result" in
+  season_down url (string_of_int (responce |> Json.get_child "media" |> Json.get_child "season_id" |> Json.as_int)) options
+;;
+
 let classify_url url =
   let rec match_patterns = function
     | [] -> None
@@ -150,6 +156,7 @@ let extract_url url options =
   | Some ("video", Some id) -> video_down url id options
   | Some ("episode", Some id) -> episode_down url id options
   | Some ("season", Some id) -> season_down url id options
+  | Some ("media", Some id) -> media_down url id options
   | Some (label, Some id) -> raise UnsupportedTarget
   | Some (label, None) -> raise UnsupportedTarget
 
