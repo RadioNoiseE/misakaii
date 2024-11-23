@@ -106,7 +106,7 @@ let bangumi_down url cid title options =
 let episode_down url epid options =
   let info = "https://api.bilibili.com/pgc/view/web/season" in
   Printf.printf "[*] Fetching metadata:\n%!";
-  let responce = Json.parse (Curl.get "string" (comp_url info ["epid=" ^ epid]) url options.cookie) |> Json.get_child "result" in
+  let responce = Json.parse (Curl.get "string" (comp_url info ["ep_id=" ^ epid]) url options.cookie) |> Json.get_child "result" in
   Printf.printf "    [+] Bangumi %s has %d episodes\n%!" (responce |> Json.get_child "season_title" |> Json.as_string) (responce |> Json.get_child "total" |> Json.as_int);
   let pages = responce |> Json.get_child "episodes" in
   Printf.printf "[*] Processing pages:\n%!";
