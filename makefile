@@ -38,28 +38,28 @@ libjson: libjson/datatype.ml libjson/json.ml libjson/lexer.mll libjson/parser.ml
 libcurl: libcurl/curl.ml libcurl/libcurl.c
 	cp libcurl/curl.ml $(RELEASE)
 	cp libcurl/libcurl.c $(RELEASE)
-	cd $(RELEASE)                      && \
-	cc -c -I`ocamlc -where` libcurl.c  && \
-	$(OCAML) -c curl.ml                && \
+	cd $(RELEASE)                                && \
+	cc -c -I`ocamlc -where` $(CFLAGS) libcurl.c  && \
+	$(OCAML) -c curl.ml                          && \
 	cd $(WORKSPACE)
 
 libav: libav/av.ml libav/libav.c
 	cp libav/av.ml $(RELEASE)
 	cp libav/libav.c $(RELEASE)
-	cd $(RELEASE)                    && \
-	cc -c -I`ocamlc -where` libav.c  && \
-	$(OCAML) -c av.ml                && \
+	cd $(RELEASE)                              && \
+	cc -c -I`ocamlc -where` $(CFLAGS) libav.c  && \
+	$(OCAML) -c av.ml                          && \
 	cd $(WORKSPACE)
 
 extractor: misaka/misaka.ml
 	cp misaka/misaka.ml $(RELEASE)
-	cd $(RELEASE)          && \
-	$(OCAML) -c misaka.ml  && \
+	cd $(RELEASE)                  && \
+	$(OCAML) -c misaka.ml -I +str  && \
 	cd $(WORKSPACE)
 
 misakaii: $(RELEASE) libjson libcurl libav extractor
 	cd $(RELEASE)                       && \
-	ocamlopt -o misakaii -I +str str.cmxa  \
+	ocamlopt -o misakaii str.cmxa -I +str  \
 		lexer.cmx parser.cmx json.cmx  \
 		curl.cmx libcurl.o             \
 		av.cmx libav.o                 \
