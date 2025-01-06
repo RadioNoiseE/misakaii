@@ -60,12 +60,12 @@ extractor: misaka/misaka.ml
 misakaii: $(RELEASE) libjson libcurl libav extractor
 	cd $(RELEASE)                       && \
 	ocamlopt -o misakaii str.cmxa -I +str  \
-		lexer.cmx parser.cmx json.cmx  \
-		curl.cmx libcurl.o             \
-		av.cmx libav.o                 \
-		misaka.cmx                     \
-		-ccopt "$(CFLAGS)"             \
-		-cclib "$(CLIBS)"           && \
+	        lexer.cmx parser.cmx json.cmx  \
+	        curl.cmx libcurl.o             \
+	        av.cmx libav.o                 \
+	        misaka.cmx                     \
+	        -ccopt "$(CFLAGS)"             \
+	        -cclib "$(CLIBS)"           && \
 	cd $(WORKSPACE)
 
 clean: $(RELEASE)
