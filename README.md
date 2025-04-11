@@ -1,4 +1,4 @@
-# misakaII - bang dang
+# misakaii - bang dang
 
 ```
 rne@ misaka % misakaii "https://www.bilibili.com/bangumi/play/ss2592"
