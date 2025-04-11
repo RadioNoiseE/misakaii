@@ -79,7 +79,7 @@ let video_down url vid options =
                            let title = page |> Json.get_child "part" |> Json.as_string in
                            Printf.printf "    [+] Extracting partition %Ld:\n%!" (page |> Json.get_child "page" |> Json.as_int);
                            let responce = Json.parse (Curl.get "string" (comp_url stream ["cid=" ^ (Int64.to_string (page |> Json.get_child "cid" |> Json.as_int));
-                                                                                          "fnval=" ^ (Int64.to_string (comp_fnval options)); vid]) url options.cookie) in
+                                                                                          "fnval=" ^ (string_of_int (comp_fnval options)); vid]) url options.cookie) in
                            Printf.printf "        [=] Requesting video and audio stream...\n%!";
                            let dash = responce |> Json.get_child "data" |> Json.get_child "dash" in
                            let video = Curl.get (title ^ ".video.mp4") (dash |> Json.get_child "video" |> Json.get_mem 0 |> Json.get_child "base_url" |> Json.as_string) url options.cookie in
@@ -93,7 +93,7 @@ let video_down url vid options =
 
 let bangumi_down url cid title options =
   let stream = "https://api.bilibili.com/pgc/player/web/playurl" in
-  let responce = Json.parse (Curl.get "string" (comp_url stream ["cid=" ^ cid; "fnval=" ^ (Int64.to_string (comp_fnval options))]) url options.cookie) in
+  let responce = Json.parse (Curl.get "string" (comp_url stream ["cid=" ^ cid; "fnval=" ^ (string_of_int (comp_fnval options))]) url options.cookie) in
   Printf.printf "        [=] Requesting video and audio stream...\n%!";
   let dash = responce |> Json.get_child "result" |> Json.get_child "dash" in
   let video = Curl.get (title ^ ".video.mp4") (dash |> Json.get_child "video" |> Json.get_mem 0 |> Json.get_child "base_url" |> Json.as_string) url options.cookie in
