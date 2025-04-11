@@ -52,12 +52,12 @@ static char *opt_size(curl_off_t bytes, char *size) {
   else if (bytes < 10000L * KILOBYTE)
     snprintf(size, 6, "%4lldk", bytes / KILOBYTE);
   else if (bytes < 100L * MEGABYTE)
-    snprintf(size, 6, "%2lld.%0ldM", bytes / MEGABYTE,
+    snprintf(size, 6, "%2lld.%0lldM", bytes / MEGABYTE,
              (bytes % MEGABYTE) / (MEGABYTE / 10L));
   else if (bytes < 1000L * MEGABYTE)
     snprintf(size, 6, "%3lld.M", bytes / MEGABYTE);
   else if (bytes < 10000L * MEGABYTE)
-    snprintf(size, 6, "%4ldM", bytes / MEGABYTE);
+    snprintf(size, 6, "%4lldM", bytes / MEGABYTE);
   else if (bytes < 100L * GIGABYTE)
     snprintf(size, 6, "%2lld.%0lldG", bytes / GIGABYTE,
              (bytes % GIGABYTE) / (GIGABYTE / 10L));
