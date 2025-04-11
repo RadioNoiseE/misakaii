@@ -70,16 +70,16 @@ let video_down url vid options =
                Str.replace_first bvid "bvid=" vid)
   in Printf.printf "[*] Fetching metadata:\n%!";
      let responce = Json.parse (Curl.get "string" (comp_url info [vid]) url options.cookie) |> Json.get_child "data" in
-     Printf.printf "    [+] Video %s has %d partitions\n%!" (responce |> Json.get_child "title" |> Json.as_string) (responce |> Json.get_child "videos" |> Json.as_int);
+     Printf.printf "    [+] Video %s has %ld partitions\n%!" (responce |> Json.get_child "title" |> Json.as_string) (responce |> Json.get_child "videos" |> Json.as_int);
      let vid = "bvid=" ^ (responce |> Json.get_child "bvid" |> Json.as_string) in
      let pages = responce |> Json.get_child "pages" in
      Printf.printf "[*] Processing pages:\n%!";
      match pages with
      | `Array pager -> List.iter (fun page ->
                            let title = page |> Json.get_child "part" |> Json.as_string in
-                           Printf.printf "    [+] Extracting partition %d:\n%!" (page |> Json.get_child "page" |> Json.as_int);
-                           let responce = Json.parse (Curl.get "string" (comp_url stream ["cid=" ^ (string_of_int (page |> Json.get_child "cid" |> Json.as_int));
-                                                                                          "fnval=" ^ (string_of_int (comp_fnval options)); vid]) url options.cookie) in
+                           Printf.printf "    [+] Extracting partition %ld:\n%!" (page |> Json.get_child "page" |> Json.as_int);
+                           let responce = Json.parse (Curl.get "string" (comp_url stream ["cid=" ^ (Int64.to_string (page |> Json.get_child "cid" |> Json.as_int));
+                                                                                          "fnval=" ^ (Int64.to_string (comp_fnval options)); vid]) url options.cookie) in
                            Printf.printf "        [=] Requesting video and audio stream...\n%!";
                            let dash = responce |> Json.get_child "data" |> Json.get_child "dash" in
                            let video = Curl.get (title ^ ".video.mp4") (dash |> Json.get_child "video" |> Json.get_mem 0 |> Json.get_child "base_url" |> Json.as_string) url options.cookie in
@@ -93,7 +93,7 @@ let video_down url vid options =
 
 let bangumi_down url cid title options =
   let stream = "https://api.bilibili.com/pgc/player/web/playurl" in
-  let responce = Json.parse (Curl.get "string" (comp_url stream ["cid=" ^ cid; "fnval=" ^ (string_of_int (comp_fnval options))]) url options.cookie) in
+  let responce = Json.parse (Curl.get "string" (comp_url stream ["cid=" ^ cid; "fnval=" ^ (Int64.to_string (comp_fnval options))]) url options.cookie) in
   Printf.printf "        [=] Requesting video and audio stream...\n%!";
   let dash = responce |> Json.get_child "result" |> Json.get_child "dash" in
   let video = Curl.get (title ^ ".video.mp4") (dash |> Json.get_child "video" |> Json.get_mem 0 |> Json.get_child "base_url" |> Json.as_string) url options.cookie in
@@ -107,13 +107,13 @@ let episode_down url epid options =
   let info = "https://api.bilibili.com/pgc/view/web/season" in
   Printf.printf "[*] Fetching metadata:\n%!";
   let responce = Json.parse (Curl.get "string" (comp_url info ["ep_id=" ^ epid]) url options.cookie) |> Json.get_child "result" in
-  Printf.printf "    [+] Bangumi %s has %d episodes\n%!" (responce |> Json.get_child "season_title" |> Json.as_string) (responce |> Json.get_child "total" |> Json.as_int);
+  Printf.printf "    [+] Bangumi %s has %ld episodes\n%!" (responce |> Json.get_child "season_title" |> Json.as_string) (responce |> Json.get_child "total" |> Json.as_int);
   let pages = responce |> Json.get_child "episodes" in
   Printf.printf "[*] Processing pages:\n%!";
   match pages with
   | `Array pager -> List.iter (fun episode ->
                         Printf.printf "    [+] Extracting episode %s:\n%!" (episode |> Json.get_child "title" |> Json.as_string); 
-                        bangumi_down url (string_of_int (episode |> Json.get_child "cid" |> Json.as_int)) (episode |> Json.get_child "long_title" |> Json.as_string) options
+                        bangumi_down url (Int64.to_string (episode |> Json.get_child "cid" |> Json.as_int)) (episode |> Json.get_child "long_title" |> Json.as_string) options
                       ) pager
   | _ -> raise ErroneousTarget
 
@@ -121,20 +121,20 @@ let season_down url ssid options =
   let info = "https://api.bilibili.com/pgc/view/web/season" in
   Printf.printf "[*] Fetching metadata:\n%!";
   let responce = Json.parse (Curl.get "string" (comp_url info ["season_id=" ^ ssid]) url options.cookie) |> Json.get_child "result" in
-  Printf.printf "    [+] Bangumi %s has %d episodes\n%!" (responce |> Json.get_child "season_title" |> Json.as_string) (responce |> Json.get_child "total" |> Json.as_int);
+  Printf.printf "    [+] Bangumi %s has %ld episodes\n%!" (responce |> Json.get_child "season_title" |> Json.as_string) (responce |> Json.get_child "total" |> Json.as_int);
   let pages = responce |> Json.get_child "episodes" in
   Printf.printf "[*] Processing pages:\n%!";
   match pages with
   | `Array pager -> List.iter (fun episode ->
                         Printf.printf "    [+] Extracting episode %s:\n%!" (episode |> Json.get_child "title" |> Json.as_string); 
-                        bangumi_down url (string_of_int (episode |> Json.get_child "cid" |> Json.as_int)) (episode |> Json.get_child "long_title" |> Json.as_string) options
+                        bangumi_down url (Int64.to_string (episode |> Json.get_child "cid" |> Json.as_int)) (episode |> Json.get_child "long_title" |> Json.as_string) options
                       ) pager
   | _ -> raise ErroneousTarget
 
 let media_down url mdid options =
   let info = "https://api.bilibili.com/pgc/review/user" in
   let responce = Json.parse (Curl.get "string" (comp_url info ["media_id=" ^ mdid]) url options.cookie) |> Json.get_child "result" in
-  season_down url (string_of_int (responce |> Json.get_child "media" |> Json.get_child "season_id" |> Json.as_int)) options
+  season_down url (Int64.to_string (responce |> Json.get_child "media" |> Json.get_child "season_id" |> Json.as_int)) options
 ;;
 
 let classify_url url =
