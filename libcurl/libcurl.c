@@ -39,39 +39,6 @@ static size_t write_file(void *cnts, size_t size, size_t nmemb, FILE *stream) {
   return wsize;
 }
 
-static char *opt_size(curl_off_t bytes, char *size) {
-#define KILOBYTE 1024L
-#define MEGABYTE (1024L * KILOBYTE)
-#define GIGABYTE (1024L * MEGABYTE)
-#define TERABYTE (1024L * GIGABYTE)
-#define PETABYTE (1024L * TERABYTE)
-  if (bytes < 100000L)
-    snprintf(size, 6, "%5lld", bytes);
-  else if (bytes < 1000L * KILOBYTE)
-    snprintf(size, 6, "%3lld.k", bytes / KILOBYTE);
-  else if (bytes < 10000L * KILOBYTE)
-    snprintf(size, 6, "%4lldk", bytes / KILOBYTE);
-  else if (bytes < 100L * MEGABYTE)
-    snprintf(size, 6, "%2lld.%0lldM", bytes / MEGABYTE,
-             (bytes % MEGABYTE) / (MEGABYTE / 10L));
-  else if (bytes < 1000L * MEGABYTE)
-    snprintf(size, 6, "%3lld.M", bytes / MEGABYTE);
-  else if (bytes < 10000L * MEGABYTE)
-    snprintf(size, 6, "%4lldM", bytes / MEGABYTE);
-  else if (bytes < 100L * GIGABYTE)
-    snprintf(size, 6, "%2lld.%0lldG", bytes / GIGABYTE,
-             (bytes % GIGABYTE) / (GIGABYTE / 10L));
-  else if (bytes < 1000L * GIGABYTE)
-    snprintf(size, 6, "%3lld.G", bytes / GIGABYTE);
-  else if (bytes < 10000L * GIGABYTE)
-    snprintf(size, 6, "%4lldG", bytes / GIGABYTE);
-  else if (bytes < 10000L * TERABYTE)
-    snprintf(size, 6, "%4lldT", bytes / TERABYTE);
-  else
-    snprintf(size, 6, "%4lldP", bytes / PETABYTE);
-  return size;
-}
-
 static size_t fetch_prog(void *clientp, curl_off_t dltotal, curl_off_t dlnow,
                          curl_off_t ultotal, curl_off_t ulnow) {
   if (dltotal <= 0)
@@ -81,18 +48,14 @@ static size_t fetch_prog(void *clientp, curl_off_t dltotal, curl_off_t dlnow,
   int witer;
   printf("\r[");
   witer += 1;
-  int wnow = round(dlfrac * *wtotal) - 5;
+  int wnow = round(dlfrac * *wtotal);
   while (witer++ < wnow)
     printf("=");
   char snow[6], stotal[6];
-  if (witer + 8 < *wtotal) {
-    printf("%s", opt_size(dlnow, snow));
-    witer += 5;
-  }
-  int wspc = *wtotal - 4;
+  int wspc = *wtotal;
   while (witer++ < wspc)
     printf(" ");
-  printf("%s]", opt_size(dltotal, stotal));
+  printf("]");
   fflush(stdout);
   return CURLE_OK;
 }
