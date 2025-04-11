@@ -46,29 +46,29 @@ static char *opt_size(curl_off_t bytes, char *size) {
 #define TERABYTE (1024L * GIGABYTE)
 #define PETABYTE (1024L * TERABYTE)
   if (bytes < 100000L)
-    snprintf(size, 6, "%5ld", bytes);
+    snprintf(size, 6, "%5lld", bytes);
   else if (bytes < 1000L * KILOBYTE)
-    snprintf(size, 6, "%3ld.k", bytes / KILOBYTE);
+    snprintf(size, 6, "%3lld.k", bytes / KILOBYTE);
   else if (bytes < 10000L * KILOBYTE)
-    snprintf(size, 6, "%4ldk", bytes / KILOBYTE);
+    snprintf(size, 6, "%4lldk", bytes / KILOBYTE);
   else if (bytes < 100L * MEGABYTE)
-    snprintf(size, 6, "%2ld.%0ldM", bytes / MEGABYTE,
+    snprintf(size, 6, "%2lld.%0ldM", bytes / MEGABYTE,
              (bytes % MEGABYTE) / (MEGABYTE / 10L));
   else if (bytes < 1000L * MEGABYTE)
-    snprintf(size, 6, "%3ld.M", bytes / MEGABYTE);
+    snprintf(size, 6, "%3lld.M", bytes / MEGABYTE);
   else if (bytes < 10000L * MEGABYTE)
     snprintf(size, 6, "%4ldM", bytes / MEGABYTE);
   else if (bytes < 100L * GIGABYTE)
-    snprintf(size, 6, "%2ld.%0ldG", bytes / GIGABYTE,
+    snprintf(size, 6, "%2lld.%0lldG", bytes / GIGABYTE,
              (bytes % GIGABYTE) / (GIGABYTE / 10L));
   else if (bytes < 1000L * GIGABYTE)
-    snprintf(size, 6, "%3ld.G", bytes / GIGABYTE);
+    snprintf(size, 6, "%3lld.G", bytes / GIGABYTE);
   else if (bytes < 10000L * GIGABYTE)
-    snprintf(size, 6, "%4ldG", bytes / GIGABYTE);
+    snprintf(size, 6, "%4lldG", bytes / GIGABYTE);
   else if (bytes < 10000L * TERABYTE)
-    snprintf(size, 6, "%4ldT", bytes / TERABYTE);
+    snprintf(size, 6, "%4lldT", bytes / TERABYTE);
   else
-    snprintf(size, 6, "%4ldP", bytes / PETABYTE);
+    snprintf(size, 6, "%4lldP", bytes / PETABYTE);
   return size;
 }
 
