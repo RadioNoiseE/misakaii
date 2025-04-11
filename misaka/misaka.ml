@@ -70,14 +70,14 @@ let video_down url vid options =
                Str.replace_first bvid "bvid=" vid)
   in Printf.printf "[*] Fetching metadata:\n%!";
      let responce = Json.parse (Curl.get "string" (comp_url info [vid]) url options.cookie) |> Json.get_child "data" in
-     Printf.printf "    [+] Video %s has %ld partitions\n%!" (responce |> Json.get_child "title" |> Json.as_string) (responce |> Json.get_child "videos" |> Json.as_int);
+     Printf.printf "    [+] Video %s has %Ld partitions\n%!" (responce |> Json.get_child "title" |> Json.as_string) (responce |> Json.get_child "videos" |> Json.as_int);
      let vid = "bvid=" ^ (responce |> Json.get_child "bvid" |> Json.as_string) in
      let pages = responce |> Json.get_child "pages" in
      Printf.printf "[*] Processing pages:\n%!";
      match pages with
      | `Array pager -> List.iter (fun page ->
                            let title = page |> Json.get_child "part" |> Json.as_string in
-                           Printf.printf "    [+] Extracting partition %ld:\n%!" (page |> Json.get_child "page" |> Json.as_int);
+                           Printf.printf "    [+] Extracting partition %Ld:\n%!" (page |> Json.get_child "page" |> Json.as_int);
                            let responce = Json.parse (Curl.get "string" (comp_url stream ["cid=" ^ (Int64.to_string (page |> Json.get_child "cid" |> Json.as_int));
                                                                                           "fnval=" ^ (Int64.to_string (comp_fnval options)); vid]) url options.cookie) in
                            Printf.printf "        [=] Requesting video and audio stream...\n%!";
@@ -107,7 +107,7 @@ let episode_down url epid options =
   let info = "https://api.bilibili.com/pgc/view/web/season" in
   Printf.printf "[*] Fetching metadata:\n%!";
   let responce = Json.parse (Curl.get "string" (comp_url info ["ep_id=" ^ epid]) url options.cookie) |> Json.get_child "result" in
-  Printf.printf "    [+] Bangumi %s has %ld episodes\n%!" (responce |> Json.get_child "season_title" |> Json.as_string) (responce |> Json.get_child "total" |> Json.as_int);
+  Printf.printf "    [+] Bangumi %s has %Ld episodes\n%!" (responce |> Json.get_child "season_title" |> Json.as_string) (responce |> Json.get_child "total" |> Json.as_int);
   let pages = responce |> Json.get_child "episodes" in
   Printf.printf "[*] Processing pages:\n%!";
   match pages with
@@ -121,7 +121,7 @@ let season_down url ssid options =
   let info = "https://api.bilibili.com/pgc/view/web/season" in
   Printf.printf "[*] Fetching metadata:\n%!";
   let responce = Json.parse (Curl.get "string" (comp_url info ["season_id=" ^ ssid]) url options.cookie) |> Json.get_child "result" in
-  Printf.printf "    [+] Bangumi %s has %ld episodes\n%!" (responce |> Json.get_child "season_title" |> Json.as_string) (responce |> Json.get_child "total" |> Json.as_int);
+  Printf.printf "    [+] Bangumi %s has %Ld episodes\n%!" (responce |> Json.get_child "season_title" |> Json.as_string) (responce |> Json.get_child "total" |> Json.as_int);
   let pages = responce |> Json.get_child "episodes" in
   Printf.printf "[*] Processing pages:\n%!";
   match pages with
