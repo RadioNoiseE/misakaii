@@ -17,6 +17,12 @@ rne@ misaka % misakaii "https://www.bilibili.com/bangumi/play/ss2592"
 [============================================129.M                                                                   310.M]
 ```
 
+## Notice
+
+Branch `i386-patch` contains patches for `libjson`, `libcurl` and `misakaii` to support i386 devices.
+
+Tested with iSH on iOS 18.4, with packages: `gcc`, `g++`, `ocaml`, `ffmpeg-dev` and `curl-dev`.
+
 ## Introduction
 
 Bilibili media crawler written in OCaml with minimal dependencies. Aims to be small,
