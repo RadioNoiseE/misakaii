@@ -78,7 +78,7 @@ static size_t fetch_prog(void *clientp, curl_off_t dltotal, curl_off_t dlnow,
     return 0;
   int *wtotal = clientp;
   double dlfrac = (double)dlnow / (double)dltotal;
-  int witer;
+  int witer = 1;
   printf("\r[");
   witer += 1;
   int wnow = round(dlfrac * *wtotal) - 5;
