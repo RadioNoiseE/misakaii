@@ -1,4 +1,4 @@
-# misakaII - BangDang
+# misakaII - bang dang
 
 ```
 rne@ misaka % misakaii "https://www.bilibili.com/bangumi/play/ss2592"
@@ -16,6 +16,12 @@ rne@ misaka % misakaii "https://www.bilibili.com/bangumi/play/ss2592"
         [=] Requesting video and audio stream...
 [============================================129.M                                                                   310.M]
 ```
+
+## About this Branch
+
+This branch contains patches for `libjson`, `libcurl` and `misakaii` to support i386 devices.
+
+Tested with iSH on iOS 18.4, with packages: `gcc`, `g++`, `ocaml`, `ffmpeg-dev` and `curl-dev`.
 
 ## Introduction
 
