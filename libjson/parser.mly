@@ -1,4 +1,4 @@
-%token <int> INT
+%token <int64> INT
 %token <float> FLOAT
 %token TRUE
 %token FALSE
