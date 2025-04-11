@@ -1,5 +1,5 @@
 type stt = [
-  | `Integer of int
+  | `Integer of int64
   | `Float of float
   | `Bool of bool
   | `String of string
