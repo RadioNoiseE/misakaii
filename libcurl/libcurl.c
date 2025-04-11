@@ -43,20 +43,6 @@ static size_t fetch_prog(void *clientp, curl_off_t dltotal, curl_off_t dlnow,
                          curl_off_t ultotal, curl_off_t ulnow) {
   if (dltotal <= 0)
     return 0;
-  int *wtotal = clientp;
-  double dlfrac = (double)dlnow / (double)dltotal;
-  int witer;
-  printf("\r[");
-  witer += 1;
-  int wnow = round(dlfrac * *wtotal);
-  while (witer++ < wnow)
-    printf("=");
-  char snow[6], stotal[6];
-  int wspc = *wtotal;
-  while (witer++ < wspc)
-    printf(" ");
-  printf("]");
-  fflush(stdout);
   return CURLE_OK;
 }
 
@@ -81,18 +67,10 @@ CAMLprim value caml_fetch(value dest, value url, value referer, value cookie) {
   } else
     file = fopen(String_val(dest), "wb");
 
-  ioctl(STDOUT_FILENO, TIOCGWINSZ, &term);
-  twidth = term.ws_col;
-
   curl_easy_setopt(flag, CURLOPT_URL, String_val(url));
   curl_easy_setopt(flag, CURLOPT_USERAGENT, UA);
   curl_easy_setopt(flag, CURLOPT_COOKIE, String_val(cookie));
   curl_easy_setopt(flag, CURLOPT_REFERER, String_val(referer));
-  if (!exec) {
-    curl_easy_setopt(flag, CURLOPT_NOPROGRESS, 0L);
-    curl_easy_setopt(flag, CURLOPT_XFERINFODATA, &twidth);
-    curl_easy_setopt(flag, CURLOPT_XFERINFOFUNCTION, fetch_prog);
-  }
   curl_easy_setopt(flag, CURLOPT_WRITEFUNCTION,
                    exec ? write_string : write_file);
   curl_easy_setopt(flag, CURLOPT_WRITEDATA, exec ? (void *)&chunk : file);
