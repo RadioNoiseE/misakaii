@@ -59,15 +59,18 @@ let comp_fnval options =
 let comp_url base params =
   base ^ "?" ^ String.concat "&" params
 
+let wash_posix name =
+  Str.global_replace (Str.regexp {|[:/]|}) {|?|} name
+
 let video_down url vid options =
   let info = "https://api.bilibili.com/x/web-interface/wbi/view" in
   let stream = "https://api.bilibili.com/x/player/wbi/playurl" in
   let avid = Str.regexp {|^\([Aa][Vv]\)|} in
   let bvid = Str.regexp {|^\([Bb][Vv]\)|} in
   let vid = (if Str.string_match avid vid 0 then
-               Str.replace_first avid "aid=" vid
-             else
-               Str.replace_first bvid "bvid=" vid)
+              Str.replace_first avid "aid=" vid
+            else
+              Str.replace_first bvid "bvid=" vid)
   in Printf.printf "[*] Fetching metadata:\n%!";
      let responce = Json.parse (Curl.get "string" (comp_url info [vid]) url options.cookie) |> Json.get_child "data" in
      Printf.printf "    [+] Video %s has %Ld partitions\n%!" (responce |> Json.get_child "title" |> Json.as_string) (responce |> Json.get_child "videos" |> Json.as_int);
@@ -76,7 +79,7 @@ let video_down url vid options =
      Printf.printf "[*] Processing pages:\n%!";
      match pages with
      | `Array pager -> List.iter (fun page ->
-                           let title = page |> Json.get_child "part" |> Json.as_string in
+                           let title = page |> Json.get_child "part" |> Json.as_string |> wash_posix in
                            Printf.printf "    [+] Extracting partition %Ld:\n%!" (page |> Json.get_child "page" |> Json.as_int);
                            let responce = Json.parse (Curl.get "string" (comp_url stream ["cid=" ^ (Int64.to_string (page |> Json.get_child "cid" |> Json.as_int));
                                                                                           "fnval=" ^ (string_of_int (comp_fnval options)); vid]) url options.cookie) in
@@ -112,8 +115,8 @@ let episode_down url epid options =
   Printf.printf "[*] Processing pages:\n%!";
   match pages with
   | `Array pager -> List.iter (fun episode ->
-                        Printf.printf "    [+] Extracting episode %s:\n%!" (episode |> Json.get_child "title" |> Json.as_string); 
-                        bangumi_down url (Int64.to_string (episode |> Json.get_child "cid" |> Json.as_int)) (episode |> Json.get_child "long_title" |> Json.as_string) options
+                        Printf.printf "    [+] Extracting episode %s:\n%!" (episode |> Json.get_child "title" |> Json.as_string);
+                        bangumi_down url (Int64.to_string (episode |> Json.get_child "cid" |> Json.as_int)) (episode |> Json.get_child "long_title" |> Json.as_string |> wash_posix) options
                       ) pager
   | _ -> raise ErroneousTarget
 
@@ -126,8 +129,8 @@ let season_down url ssid options =
   Printf.printf "[*] Processing pages:\n%!";
   match pages with
   | `Array pager -> List.iter (fun episode ->
-                        Printf.printf "    [+] Extracting episode %s:\n%!" (episode |> Json.get_child "title" |> Json.as_string); 
-                        bangumi_down url (Int64.to_string (episode |> Json.get_child "cid" |> Json.as_int)) (episode |> Json.get_child "long_title" |> Json.as_string) options
+                        Printf.printf "    [+] Extracting episode %s:\n%!" (episode |> Json.get_child "title" |> Json.as_string);
+                        bangumi_down url (Int64.to_string (episode |> Json.get_child "cid" |> Json.as_int)) (episode |> Json.get_child "long_title" |> Json.as_string |> wash_posix) options
                       ) pager
   | _ -> raise ErroneousTarget
 
