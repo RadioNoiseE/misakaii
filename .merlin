@@ -1,0 +1,8 @@
+S libav
+S libcurl
+S libjson
+S misaka
+
+B prog
+
+PKG str

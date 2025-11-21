@@ -1,6 +1,6 @@
-exception UnsupportedTarget
-exception EmptyTarget
-exception ErroneousTarget
+exception Unsupported_target
+exception Empty_target
+exception Erroneous_target
 
 type options = {
     cookie: string;
@@ -92,7 +92,7 @@ let video_down url vid options =
                            Sys.remove video; Sys.remove audio;
                            Printf.printf "        [=] Saving %s to dist...\n%!" mux
                          ) pager
-     | _ -> raise ErroneousTarget
+     | _ -> raise Erroneous_target
 
 let bangumi_down url cid title options =
   let stream = "https://api.bilibili.com/pgc/player/web/playurl" in
@@ -118,7 +118,7 @@ let episode_down url epid options =
                         Printf.printf "    [+] Extracting episode %s:\n%!" (episode |> Json.get_child "title" |> Json.as_string);
                         bangumi_down url (string_of_int (episode |> Json.get_child "cid" |> Json.as_int)) (episode |> Json.get_child "long_title" |> Json.as_string |> wash_posix) options
                       ) pager
-  | _ -> raise ErroneousTarget
+  | _ -> raise Erroneous_target
 
 let season_down url ssid options =
   let info = "https://api.bilibili.com/pgc/view/web/season" in
@@ -132,7 +132,7 @@ let season_down url ssid options =
                         Printf.printf "    [+] Extracting episode %s:\n%!" (episode |> Json.get_child "title" |> Json.as_string);
                         bangumi_down url (string_of_int (episode |> Json.get_child "cid" |> Json.as_int)) (episode |> Json.get_child "long_title" |> Json.as_string |> wash_posix) options
                       ) pager
-  | _ -> raise ErroneousTarget
+  | _ -> raise Erroneous_target
 
 let media_down url mdid options =
   let info = "https://api.bilibili.com/pgc/review/user" in
@@ -155,18 +155,18 @@ let classify_url url =
 
 let extract_url url options =
   match classify_url url with
-  | None -> raise UnsupportedTarget
+  | None -> raise Unsupported_target
   | Some ("video", Some id) -> video_down url id options
   | Some ("episode", Some id) -> episode_down url id options
   | Some ("season", Some id) -> season_down url id options
   | Some ("media", Some id) -> media_down url id options
-  | Some (label, Some id) -> raise UnsupportedTarget
-  | Some (label, None) -> raise UnsupportedTarget
+  | Some (label, Some id) -> raise Unsupported_target
+  | Some (label, None) -> raise Unsupported_target
 
 let target_handle url options =
   let media_down url = extract_url url options in
   match url with
-  | [] -> raise EmptyTarget
+  | [] -> raise Empty_target
   | urls -> List.iter media_down urls
 
 let read_cookie file =

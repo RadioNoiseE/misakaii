@@ -2,7 +2,7 @@
   open Lexing
   open Parser
 
-  exception SyntaxError of string
+  exception Syntax_error of string
 
   let next_line lexbuf =
     let pos = lexbuf.lex_curr_p in
@@ -42,7 +42,7 @@ rule read =
   | ']' { RIGHT_BRACK }
   | '{' { LEFT_BRACE }
   | '}' { RIGHT_BRACE }
-  | _ { raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
+  | _ { raise (Syntax_error ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
   | eof { EOF }
 and read_string buf =
   parse
@@ -57,5 +57,5 @@ and read_string buf =
   | '\\' 't' { Buffer.add_char buf '\t'; read_string buf lexbuf }
   | unicode { Buffer.add_char buf (encode (Lexing.lexeme lexbuf)); read_string buf lexbuf }
   | [^ '\"' '\\']+ { Buffer.add_string buf (Lexing.lexeme lexbuf); read_string buf lexbuf }
-  | _ { raise (SyntaxError ("Illegal string character: " ^ Lexing.lexeme lexbuf)) }
-  | eof { raise (SyntaxError ("String terminated by EOF")) }
+  | _ { raise (Syntax_error ("Illegal string character: " ^ Lexing.lexeme lexbuf)) }
+  | eof { raise (Syntax_error ("String terminated by EOF")) }

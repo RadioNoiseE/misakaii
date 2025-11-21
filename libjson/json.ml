@@ -7,7 +7,7 @@ let print_position outx lexbuf =
 
 let parse_with_error lexbuf =
   try Parser.decl Lexer.read lexbuf with
-  | Lexer.SyntaxError msg ->
+  | Lexer.Syntax_error msg ->
      fprintf stderr "%a: %s\n" print_position lexbuf msg;
      `Null
   | Parsing.Parse_error ->
@@ -29,36 +29,36 @@ let typeof = function
   | `Array _ -> "array"
   | `Object _ -> "object"
 
-exception NotNumericValue
-exception NotStringableValue
-exception NotArray
-exception EmptyArray
-exception NotObject
-exception EmptyObject
+exception Not_numeric_value
+exception Not_stringable_value
+exception Not_array
+exception Empty_array
+exception Not_object
+exception Empty_object
 
 let as_int nmr =
   match nmr with
   | `Integer nmr -> nmr
-  | _ -> raise NotNumericValue
+  | _ -> raise Not_numeric_value
 
 let as_float nmr =
   match nmr with
   | `Float nmr -> nmr
-  | _ -> raise NotNumericValue
+  | _ -> raise Not_numeric_value
 
 let as_string str =
   match str with
   | `String str -> str
-  | _ -> raise NotStringableValue
+  | _ -> raise Not_stringable_value
 
 let rec get_mem (n: int) a =
   match a with
-  | `Array ([]) -> raise EmptyArray
+  | `Array ([]) -> raise Empty_array
   | `Array (a) -> List.nth a n
-  | _ -> raise NotArray
+  | _ -> raise Not_array
 
 let rec get_child (k: string) o =
   match o with
-  | `Object ([]) -> raise EmptyObject
+  | `Object ([]) -> raise Empty_object
   | `Object (o) -> List.assoc k o
-  | _ -> raise NotObject
+  | _ -> raise Not_object
