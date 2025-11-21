@@ -60,7 +60,7 @@ let comp_url base params =
   base ^ "?" ^ String.concat "&" params
 
 let wash_posix name =
-  Str.global_replace (Str.regexp {|[:/]|}) {|?|} name
+  Str.global_replace (Str.regexp {|[:/]|}) {|-|} name
 
 let video_down url vid options =
   let info = "https://api.bilibili.com/x/web-interface/wbi/view" in
