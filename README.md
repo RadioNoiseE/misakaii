@@ -1,88 +1,48 @@
-# misakaii - bang dang
-
-```
-rne@ misaka % misakaii "https://www.bilibili.com/bangumi/play/ss2592"
-[*] Applying season recipe...
-[*] Fetching metadata:
-    [+] Bangumi 学园孤岛 has 12 episodes
-[*] Processing pages:
-    [+] Extracting episode 1:
-        [=] Requesting video and audio stream...
-[====================================================================================================================130.M]
-[====================================================================================================================29.6M]
-        [=] Muxing video and audio stream...
-        [=] Saving 开始.mp4 to dist...
-    [+] Extracting episode 2:
-        [=] Requesting video and audio stream...
-[============================================129.M                                                                   310.M]
-```
-
-## Notice
-
-Branch `i386-patch` contains patches for `libjson`, `libcurl` and `misakaii` to support i386 devices.
-
-Tested with iSH on iOS 18.4, with packages: `gcc`, `g++`, `ocaml`, `ffmpeg-dev` and `curl-dev`.
-
 ## Introduction
 
-Bilibili media crawler written in OCaml with minimal dependencies. Aims to be small,
-fast and robust with some TUI eye candies.
+This is a standalone bilibili media crawler written in OCaml with a
+minimal footprint, implemented with robustness and correctness in
+mind.
 
-This media crawler fetches the DASH stream by default. Video (single or multiple partition)
-and Bangumi (or episode) are supported at present. Support for HDR, 4(8)K, Dolby Vision/Atmos
-and AV1 encoding is experimental.
+By default, the crawler fetches DASH streams. It currently supports
+standard videos (including multi-part ones) and Bangumi episodes, with
+full support for HDR, 4K/8K, Dolby Vision/Atoms, and AV1 encoding.
 
-This is supposed to work on all UNIXs.
+It is intended to work on all UNIXs. It may also work on Windows,
+while this is untested and thus not guaranteed.
 
-## Build (From Source)
+> [!NOTE]
+> Branch `i386-patch` contains patches for `libjson`, `libcurl` and
+> `misakaii` to support i386 devices. Tested with iSH on iOS, with
+> packages: `gcc`, `g++`, `ocaml`, `ffmpeg-dev` and `curl-dev`.
 
-### Dependencies
+## Install
 
-#### Libraries
-
-- `libcurl` from [cURL](https://curl.se/docs/manpage.html);
-- `libavcodec` and `libavformat` from the [FFmpeg](https://ffmpeg.org) Project.
-
-#### Make Tools
+To compile, build and install misakaii from source, you will need the
+following build-time dependencies:
 
 - `make`, the build system;
-- `pkg-config` from [freedesktop.org](https://www.freedesktop.org/wiki/Software/pkg-config/);
-- `install` from coreutils (optional).
+- `pkg-config`, either from [freedesktop.org](https://www.freedesktop.org/wiki/Software/pkg-config/) or [pkgconf](https://github.com/pkgconf/pkgconf);
+- `install`, provided by coreutils (optional);
+- `ocamlopt`, OCaml native code compiler;
+- `cc`, any working C compiler.
 
-#### OCaml Environment
+Several libraries are required at runtime:
 
-- `ocamlopt` or `ocamlc`, the bytecode or native code compiler.
+- `libcurl`, from [cURL](https://curl.se/docs/manpage.html);
+- `libavcodec` and `libavformat`, from the [FFmpeg](https://ffmpeg.org) Project.
 
-#### C Environment
-
-- `clang` or `gcc`, or any working C compiler that is available via `cc`.
-
-### Binary
-
-Simply clone this project and run `make` will do. The binary is placed in `prog/misakaii`.
-To install to your system path, run `make install` with root privilege. Prefix is by default
-`/usr/local`.
-
-The `libcurl` and `libav` libraries are all dynamically linked.
-
-To clean up, use `make clean`.
+Run `make install` with root privilege will install the executable in
+`/usr/local/bin`. To clean up, use `make clean`.
 
 ## Usage
 
-### Cookie
+This crawler is supposed to be working with cookies. The specific
+cookie required is `SESSDATA`, which can be obtained by logging in to
+the bilibili web client and search in Storage/Cookies.
 
-This crawler is supposed to be working with cookies. The specific cookie required is `SESSDATA`,
-which can be obtained by logging in to the bilibili web client and search in Storage/Cookies.
-
-Save this string to file `$HOME/.misakaii`, in form:
-
-```
-SESSDATA=1a651s92%3***********************************************
-```
-
-You can also specify the path for this file using `-cookie` option at runtime.
-
-### Craw
+Save this string to file `$HOME/.misakaii`, in form `name=value` (as
+described in cURL's [documentation](https://curl.se/docs/http-cookies.html) about HTTP cookies).
 
 ```
 misakaii <url1> [<url2>] ... -cookie <file> {options}
@@ -94,8 +54,6 @@ misakaii <url1> [<url2>] ... -cookie <file> {options}
   -av1  Request AV1 encoding instead of HEVC
   -help  Display this list of options
 ```
-
-You can specify more than one `<url>`s, and some advanced options can also be set.
 
 ## Contribution
 
