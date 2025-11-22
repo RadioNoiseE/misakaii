@@ -1,4 +1,4 @@
-RELEASE := prog
+RELEASE := compile
 WORKSPACE := $(shell pwd)
 
 PREFIX := /usr/local
