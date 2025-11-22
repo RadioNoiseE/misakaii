@@ -1,7 +1,7 @@
 ifndef ECHO
 TOTAL := $(shell ${MAKE} ${MAKECMDGOALS} --dry-run ECHO="ECHO" | grep -c "ECHO")
 COUNT  = $(eval STEP := $(shell expr 0${STEP} + 1)) $(STEP)
-ECHO   = printf "[%3d%%] " `expr ${COUNT} '*' 100 / ${TOTAL}`; echo
+ECHO   = printf "[%3d%%] " `expr ${COUNT} \* 100 / ${TOTAL}`; echo
 endif
 
 RELEASE   := compile
