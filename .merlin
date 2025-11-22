@@ -3,6 +3,6 @@ S libcurl
 S libjson
 S misaka
 
-B prog
+B compile
 
 PKG str
