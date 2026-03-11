@@ -13,6 +13,7 @@ OCAML := ocamlopt
 
 CFLAGS :=                                                   \
 	-Wno-pointer-type-mismatch                          \
+	-Wno-incompatible-pointer-types                     \
 	$(shell pkg-config --cflags libavformat libavcodec) \
 	$(shell curl-config --cflags)
 CLIBS  :=                                                 \
